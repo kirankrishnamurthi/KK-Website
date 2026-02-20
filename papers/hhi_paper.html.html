@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✏️  Change this to your paper's title -->
+  <title>Do Superteams Work? Measuring Playing Time and Scoring Concentration in the Super-team era of the NBA — Kiran Krishnamurthi</title>
+
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/computer-modern');
+  </style>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root[data-theme="night"] {
+      --bg: #0d0d0d;
+      --ink: #e8e4dc;
+      --muted: #6b6560;
+      --accent: #c8914a;
+      --rule: #252420;
+      --viewer-bg: #1a1917;
+    }
+
+    :root[data-theme="day"] {
+      --bg: #f5f2eb;
+      --ink: #1a1814;
+      --muted: #7a756c;
+      --accent: #b5460f;
+      --rule: #dedad2;
+      --viewer-bg: #ffffff;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Computer Modern', 'CMU Serif', 'Latin Modern', 'Book Antiqua', Palatino, Georgia, serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      transition: background-color 0.35s, color 0.35s;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      transition: border-color 0.35s;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      min-width: 0;
+    }
+
+    .back-link {
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .paper-title {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .download-btn {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      transition: color 0.2s, border-color 0.2s;
+      font-family: inherit;
+    }
+
+    .download-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── PDF Viewer ── */
+    .viewer-wrap {
+      /* Full viewport height minus topbar (~52px) */
+      height: calc(100vh - 52px);
+      background: var(--viewer-bg);
+      transition: background-color 0.35s;
+    }
+
+    .viewer-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Fallback message if browser blocks iframe */
+    .fallback {
+      display: none;
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .fallback a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .paper-title { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="back-link" href="/">← Kiran Krishnamurthi</a>
+      <!-- ✏️  Change this to your paper's title -->
+      <span class="paper-title">Do Superteams Work? Measuring Playing Time and Scoring Concentration in the Super-team era of the NBA</span>
+    </div>
+    <div class="topbar-right">
+      <!-- ✏️  Change this href to your PDF filename -->
+      <a class="download-btn" href="/papers/hhi_paper.pdf" download>Download</a>
+      <button class="theme-toggle" id="toggle"><span id="toggle-label">Day</span></button>
+    </div>
+  </div>
+
+  <div class="viewer-wrap" id="viewer">
+    <!-- ✏️  Change the src to your PDF filename -->
+    <iframe
+      src="/papers/hhi_paper.pdf"
+      title="Do Superteams Work? Measuring Playing Time and Scoring Concentration in the Super-team era of the NBA"
+      id="pdf-frame"
+    ></iframe>
+    <div class="fallback" id="fallback">
+      Your browser isn't displaying the PDF inline.
+      <br />
+      <a href="/papers/hhi_paper.pdf" target="_blank">Open the PDF directly →</a>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    const html = document.documentElement;
+    const btn = document.getElementById('toggle');
+    const label = document.getElementById('toggle-label');
+
+    const saved = localStorage.getItem('kk-theme') || 'night';
+    html.setAttribute('data-theme', saved);
+    label.textContent = saved === 'night' ? 'Day' : 'Night';
+
+    btn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'night' ? 'day' : 'night';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('kk-theme', next);
+      label.textContent = next === 'night' ? 'Day' : 'Night';
+    });
+
+    // Show fallback if iframe fails to load
+    const frame = document.getElementById('pdf-frame');
+    frame.addEventListener('error', () => {
+      frame.style.display = 'none';
+      document.getElementById('fallback').style.display = 'block';
+    });
+  </script>
+
+</body>
+</html>
