@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookshelf — Kiran Krishnamurthi</title>
+
+  <!-- Computer Modern (LaTeX font) -->
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/computer-modern');
+  </style>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Theme Variables ── */
+    :root[data-theme="night"] {
+      --bg: #0d0d0d;
+      --ink: #e8e4dc;
+      --muted: #6b6560;
+      --accent: #c8914a;
+      --rule: #252420;
+      --card-bg: #161614;
+    }
+
+    :root[data-theme="day"] {
+      --bg: #f5f2eb;
+      --ink: #1a1814;
+      --muted: #7a756c;
+      --accent: #b5460f;
+      --rule: #dedad2;
+      --card-bg: #eae7e0;
+    }
+
+    html {
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Computer Modern', 'CMU Serif', 'Latin Modern', 'Book Antiqua', Palatino, 'Palatino Linotype', Georgia, serif;
+      font-weight: 400;
+      min-height: 100vh;
+      padding: 0 1.5rem;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    /* Subtle grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 5rem 0 6rem;
+    }
+
+    /* ── Sun/Moon Toggle ── */
+    .theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+      padding: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.4s ease, opacity 0.3s ease;
+    }
+
+    .theme-toggle:hover svg {
+      transform: scale(1.15);
+    }
+
+    .icon-sun {
+      color: var(--muted);
+      display: block;
+    }
+
+    .icon-moon {
+      color: var(--muted);
+      display: none;
+    }
+
+    :root[data-theme="day"] .icon-sun {
+      display: none;
+    }
+
+    :root[data-theme="day"] .icon-moon {
+      display: block;
+    }
+
+    .theme-toggle:hover .icon-sun,
+    .theme-toggle:hover .icon-moon {
+      color: var(--accent);
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      margin-bottom: 0.4rem;
+    }
+
+    .tagline {
+      font-size: 0.82rem;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    /* ── Nav ── */
+    nav {
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    nav a {
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-right: 1.6rem;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    /* ── Intro text ── */
+    .intro {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .intro p {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Divider ── */
+    .rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3rem 0;
+      opacity: 0;
+      animation: fadeIn 0.7s ease 0.3s forwards;
+      transition: border-color 0.35s;
+    }
+
+    .rule-2 {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3rem 0;
+      opacity: 0;
+      animation: fadeIn 0.7s ease 0.55s forwards;
+      transition: border-color 0.35s;
+    }
+
+    /* ── Sections ── */
+    .section-block {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    .books  { animation: fadeUp 0.7s ease 0.35s forwards; }
+    .movies { animation: fadeUp 0.7s ease 0.6s forwards; }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Cover Grid ── */
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.2rem;
+    }
+
+    .cover-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.6rem;
+    }
+
+    .cover-img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      border-radius: 3px;
+      overflow: hidden;
+      background-color: var(--card-bg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cover-img-wrap:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .cover-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-title {
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.35;
+      max-width: 100%;
+    }
+
+    .cover-author {
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: -0.3rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.7s forwards;
+    }
+
+    .back-link {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .wrapper { padding: 3.5rem 0 4rem; }
+      h1 { font-size: 1.5rem; }
+      .cover-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+      .theme-toggle { top: 1rem; right: 1rem; }
+    }
+
+    @media (max-width: 380px) {
+      .cover-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" id="toggle" aria-label="Toggle day/night mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
+
+  <div class="wrapper">
+
+    <header>
+      <h1>Bookshelf</h1>
+      <p class="tagline">Books &amp; Movies</p>
+    </header>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="/bookshelf.html">Bookshelf</a>
+      <a href="mailto:kiran@example.com">Contact</a>
+    </nav>
+
+    <section class="intro">
+      <p>A handful of favorites that stuck with me.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- ── Books ── -->
+    <section class="section-block books">
+      <p class="section-label">Books</p>
+      <div class="cover-grid">
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://covers.openlibrary.org/b/isbn/9780156027328-M.jpg" alt="Life of Pi cover" loading="lazy" />
+          </div>
+          <span class="cover-title">Life of Pi</span>
+          <span class="cover-author">Yann Martel</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://covers.openlibrary.org/b/isbn/9781501135927-M.jpg" alt="Shoe Dog cover" loading="lazy" />
+          </div>
+          <span class="cover-title">Shoe Dog</span>
+          <span class="cover-author">Phil Knight</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://covers.openlibrary.org/b/isbn/9781419744785-M.jpg" alt="F*ck It, I'll Start Tomorrow cover" loading="lazy" />
+          </div>
+          <span class="cover-title">F*ck It, I'll Start Tomorrow</span>
+          <span class="cover-author">Action Bronson</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://covers.openlibrary.org/b/isbn/9780060555665-M.jpg" alt="The Intelligent Investor cover" loading="lazy" />
+          </div>
+          <span class="cover-title">The Intelligent Investor</span>
+          <span class="cover-author">Benjamin Graham</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://covers.openlibrary.org/b/isbn/9780316003957-M.jpg" alt="The Mysterious Benedict Society cover" loading="lazy" />
+          </div>
+          <span class="cover-title">The Mysterious Benedict Society</span>
+          <span class="cover-author">Trenton Lee Stewart</span>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="rule-2" />
+
+    <!-- ── Movies ── -->
+    <section class="section-block movies">
+      <p class="section-label">Movies</p>
+      <div class="cover-grid">
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w342/7fn624j5lj3xTme2SgiLCeuedmO.jpg" alt="Whiplash poster" loading="lazy" />
+          </div>
+          <span class="cover-title">Whiplash</span>
+          <span class="cover-author">2014</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w342/n0ybibhJtQ5icDqTp8eRytcIHJx.jpg" alt="The Social Network poster" loading="lazy" />
+          </div>
+          <span class="cover-title">The Social Network</span>
+          <span class="cover-author">2010</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w342/eLMOIPBJnMOWRBVbx1GVXmFIQMN.jpg" alt="The Gentlemen poster" loading="lazy" />
+          </div>
+          <span class="cover-title">The Gentlemen</span>
+          <span class="cover-author">2019</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w342/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg" alt="Spider-Man: Across the Spider-Verse poster" loading="lazy" />
+          </div>
+          <span class="cover-title">Across the Spider-Verse</span>
+          <span class="cover-author">2023</span>
+        </div>
+
+        <div class="cover-item">
+          <div class="cover-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w342/hKHZhUbIyUAjcSrqJThFGYIR6kI.jpg" alt="To All the Boys I've Loved Before poster" loading="lazy" />
+          </div>
+          <span class="cover-title">To All the Boys I've Loved Before</span>
+          <span class="cover-author">2018</span>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <a class="back-link" href="/">← Back to home</a>
+    </footer>
+
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const btn = document.getElementById('toggle');
+
+    const saved = localStorage.getItem('kk-theme') || 'night';
+    html.setAttribute('data-theme', saved);
+
+    btn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'night' ? 'day' : 'night';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('kk-theme', next);
+    });
+  </script>
+</body>
+</html>
