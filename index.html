@@ -35,7 +35,7 @@
     }
 
     html {
-      font-size: 17px;
+      font-size: 15px;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -67,28 +67,54 @@
       padding: 5rem 0 6rem;
     }
 
-    /* ── Day/Night Toggle ── */
+    /* ── Sun/Moon Toggle ── */
     .theme-toggle {
       position: fixed;
       top: 1.5rem;
       right: 1.5rem;
       background: none;
-      border: 1px solid var(--rule);
-      color: var(--muted);
+      border: none;
       cursor: pointer;
-      font-size: 0.72rem;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      padding: 0.4rem 0.85rem;
-      border-radius: 2px;
-      font-family: inherit;
       z-index: 100;
-      transition: color 0.2s, border-color 0.2s, background-color 0.35s;
+      padding: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .theme-toggle:hover {
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.4s ease, opacity 0.3s ease;
+    }
+
+    .theme-toggle:hover svg {
+      transform: scale(1.15);
+    }
+
+    /* Sun icon (shown in night mode — click to go to day) */
+    .icon-sun {
+      color: var(--muted);
+      display: block;
+    }
+
+    /* Moon icon (shown in day mode — click to go to night) */
+    .icon-moon {
+      color: var(--muted);
+      display: none;
+    }
+
+    :root[data-theme="day"] .icon-sun {
+      display: none;
+    }
+
+    :root[data-theme="day"] .icon-moon {
+      display: block;
+    }
+
+    .theme-toggle:hover .icon-sun,
+    .theme-toggle:hover .icon-moon {
       color: var(--accent);
-      border-color: var(--accent);
     }
 
     /* ── Header ── */
@@ -100,7 +126,7 @@
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 400;
       letter-spacing: -0.01em;
       line-height: 1.15;
@@ -108,7 +134,7 @@
     }
 
     .tagline {
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       color: var(--muted);
       letter-spacing: 0.07em;
       text-transform: uppercase;
@@ -124,7 +150,7 @@
     }
 
     nav a {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-decoration: none;
       color: var(--muted);
       letter-spacing: 0.05em;
@@ -145,7 +171,7 @@
     }
 
     .bio p {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       line-height: 1.9;
       color: var(--ink);
     }
@@ -182,7 +208,7 @@
     .papers    { animation: fadeUp 0.7s ease 0.42s forwards; }
 
     .section-label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--muted);
@@ -220,12 +246,12 @@
     }
 
     .post-title {
-      font-size: 1rem;
+      font-size: 0.92rem;
       font-style: italic;
     }
 
     .post-meta {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--muted);
       white-space: nowrap;
       flex-shrink: 0;
@@ -234,7 +260,7 @@
     /* PDF badge */
     .post-meta .badge {
       display: inline-block;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       border: 1px solid var(--muted);
@@ -259,7 +285,7 @@
     }
 
     .social-links a {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--muted);
       text-decoration: none;
       letter-spacing: 0.03em;
@@ -281,7 +307,7 @@
     /* ── Responsive ── */
     @media (max-width: 600px) {
       .wrapper { padding: 3.5rem 0 4rem; }
-      h1 { font-size: 1.65rem; }
+      h1 { font-size: 1.5rem; }
       .post-list a { flex-direction: column; gap: 0.2rem; }
       .theme-toggle { top: 1rem; right: 1rem; }
     }
@@ -290,7 +316,22 @@
 <body>
 
   <button class="theme-toggle" id="toggle" aria-label="Toggle day/night mode">
-    <span id="toggle-label">Day</span>
+    <!-- Sun icon (visible in night mode) -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <!-- Moon icon (visible in day mode) -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
   </button>
 
   <div class="wrapper">
@@ -303,57 +344,21 @@
     <nav>
       <a href="/">Home</a>
       <a href="/bookshelf.html">Bookshelf</a>
-      <a href="/cdn-cgi/l/email-protection#ee85879c8f80ae858d859c879d8680c08d8183">Contact</a>
+      <a href="mailto:kiran@example.com">Contact</a>
     </nav>
 
     <section class="bio">
       <p>
-        Tech investor with an interest in math, power &amp; energy, physics, and sports. If you've got an idea, hard problem, or are interested in connecting — <a href="/cdn-cgi/l/email-protection#7b1012091a153b101810091208131555181416">drop me a line</a>.
+        Tech investor with an interest in math, power &amp; energy, physics, and sports. If you've got an idea, hard problem, or are interested in connecting — <a href="mailto:kiran@example.com">drop me a line</a>.
       </p>
     </section>
 
     <hr class="rule" />
 
-    <!-- ── Writing Section ── -->
-<!--    <section class="section-block writing">
-      <p class="section-label">Writing</p> 
-      <ul class="post-list"> -->
-        <!-- Add blog posts here -->
-<!--        <li>
-          <a href="#">
-            <span class="post-title">Your First Post Title</span>
-            <span class="post-meta">Feb 2026</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="post-title">Another Post Title</span>
-            <span class="post-meta">Jan 2026</span>
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <hr class="rule" style="animation-delay: 0.38s;" />
-
     <!-- ── Papers Section ── -->
     <section class="section-block papers">
       <p class="section-label">Papers</p>
       <ul class="post-list">
-        <!--
-          To add a paper:
-          1. Upload the PDF to your GitHub repo inside a /papers/ folder
-          2. Copy a <li> block below and update the href, title, and date
-          3. The href should be: /papers/your-filename.pdf
-        -->
-        <!--
-          To add a paper:
-          1. Upload your PDF to the /papers/ folder in your GitHub repo
-          2. Duplicate the paper-viewer.html file, rename it (e.g. energy-markets.html),
-             and update the 3 spots marked with ✏️ inside that file
-          3. Copy a <li> block below, update the href to match your viewer filename,
-             and update the title and year
-        -->
         <li>
           <a href="/papers/hhi_paper.html">
             <span class="post-title">Do Superteams Work? Measuring Playing Time and Scoring Concentration in the Super-team era of the NBA</span>
@@ -362,7 +367,7 @@
         </li>
         <li>
           <a href="/papers/inflation_paper.html">
-            <span class="post-title">NBA Macroeconomics: Scoring Inflation and LeBron James’s Race to the Top</span>
+            <span class="post-title">NBA Macroeconomics: Scoring Inflation and LeBron James's Race to the Top</span>
             <span class="post-meta">2023</span>
           </a>
         </li>
@@ -373,21 +378,25 @@
       <div class="social-links">
         <a href="https://linkedin.com/in/kckrishn" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://twitter.com/" target="_blank" rel="noopener">Twitter / X</a>
-        <a href="/cdn-cgi/l/email-protection#5e35372c3f301e353d352c372d3630703d3133">Email</a>
+        <a href="mailto:kiran@example.com">Email</a>
       </div>
     </footer>
 
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     const html = document.documentElement;
     const btn = document.getElementById('toggle');
-    const label = document.getElementById('toggle-label');
 
     const saved = localStorage.getItem('kk-theme') || 'night';
     html.setAttribute('data-theme', saved);
-    label.textContent = saved === 'night' ? 'Day' : 'Night';
 
     btn.addEventListener('click', () => {
       const current = html.getAttribute('data-theme');
-      const next 
+      const next = current === 'night' ? 'day' : 'night';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('kk-theme', next);
+    });
+  </script>
+</body>
+</html>
